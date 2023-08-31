@@ -152,13 +152,27 @@ class IVSBroadcastCameraView: UIView {
   private func onReceiveCameraPreviewHandler(_ preview: UIView) {
     self.subviews.forEach { $0.removeFromSuperview() }
     preview.translatesAutoresizingMaskIntoConstraints = false
+    preview.isHidden = true
     self.addSubview(preview)
+
+    let maskView = UIView(frame: self.bounds)
+    maskView.backgroundColor = UIColor.black
+    maskView.alpha = 1.0
+    self.addSubview(maskView)
+
     NSLayoutConstraint.activate([
       preview.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
       preview.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
       preview.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
       preview.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
     ])
+    preview.isHidden = false
+
+    UIView.animate(withDuration: 0.3, animations: {
+      maskView.alpha = 0.0
+    }, completion: { _ in
+      maskView.removeFromSuperview()
+    })
   }
   
   override init(frame: CGRect) {
